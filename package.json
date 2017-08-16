@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "babylon": "^6.18.0",
     "gql-extract": "0.0.4",
     "inquirer": "3.2.1",
     "mkdirp": "0.5.1",

@@ -1,0 +1,10 @@
+query spaceTemplatesForUser {
+	user {
+		space_templates {
+			id,
+			name,
+			image,
+			created_at
+		}
+	}
+}
