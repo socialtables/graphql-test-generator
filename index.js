@@ -3,6 +3,7 @@ const path = require('path');
 const inquirer = require("inquirer");
 const mkdir = require('mkdirp');
 const gqlExtract = require("gql-extract");
+const tmp = require("tmp");
 
 const paramQuestions = [
 	{
@@ -14,11 +15,6 @@ const paramQuestions = [
 		type: "input",
 		name: "output",
 		message: "What is test output directory?"
-	},
-	{
-		type: "input",
-		name: "graphqlOutput",
-		message: "What is the extracted graphql output location?"
 	},
 	{
 		type: "input",
@@ -34,12 +30,12 @@ function errorExit(err) {
 	}
 }
 
-function generateTest(query) {
-	const test = `const test = require("tape");
+function generateTest({ query, schemaLocation, queryName }) {
+	return `const test = require("tape");
 const { parse } = require("graphql/language");
 const { validate } = require("graphql/validation");
 const schema = require("${schemaLocation}");
-const query = \`${`${data}`}\`;
+const query = \`${`${query}`}\`;
 test("${queryName} query adheres to application schema", assert => {
 	const queryAST = parse(query);
 	const errors = validate(schema, queryAST);
@@ -49,46 +45,55 @@ test("${queryName} query adheres to application schema", assert => {
 	`
 }
 
-function readDirectoryAndGenerateTests({ entry, output, graphqlOutput, schemaLocation }) {
-	fs.readdir(entry, (err, files) => {
-		errorExit(err);
-		files.forEach(file => {
-			fs.stat(path.join(entry, file), (err, stat) => {
-				errorExit(err);
-				if (stat.isFile() && file.includes(".js")) {
-					fs.readFile(path.join(entry, file), "utf8", (err, data) => {
-						errorExit(err);
-						const { queriesWritten } = gqlExtract({
-							source: data,
-							filePath: graphqlOutput
-						});
-						if (queriesWritten.size) {
-							queriesWritten.forEach((queryPath, queryName) => {
-								fs.readFile(queryPath, "utf-8", (err, data) => {
-									errorExit(err);
-									const test = generateTest(data);
-									mkdir(output, err => {
-										errorExit(err);
-										fs.writeFile(path.join(output, `${queryName}-test.js`), test)
-									});
-								});
+function readDirectoryAndGenerateTests({ entry, output, schemaLocation }) {
+	tmp.dir({ unsafeCleanup: true}, (err, graphqlOutput, cleanup) => {
+		fs.readdir(entry, (err, files) => {
+			errorExit(err);
+			let finishedCount = 0;
+			files.forEach(file => {
+				fs.stat(path.join(entry, file), (err, stat) => {
+					errorExit(err);
+					if (stat.isFile() && file.includes(".js")) {
+						fs.readFile(path.join(entry, file), "utf8", (err, data) => {
+							errorExit(err);
+							const { queriesWritten } = gqlExtract({
+								source: data,
+								filePath: graphqlOutput
 							});
-						}
-					});
-				}
-				else if (!stat.isFile()) {
-					readDirectoryAndGenerateTests({
-						entry: path.join(entry, file),
-						output,
-						graphqlOutput,
-						schemaLocation
-					});
-				}
+							if (queriesWritten.size) {
+								queriesWritten.forEach((query, queryName) => {
+										errorExit(err);
+										mkdir(output, err => {
+											errorExit(err);
+											fs.writeFileSync(
+												path.join(output, `${queryName}-test.js`),
+												generateTest({ query, queryName, schemaLocation })
+											);
+											console.log(`test generated for ${queryName}`);
+											finishedCount++;
+											if (finishedCount === files.length) {
+												cleanup();
+											}
+										});
+								});
+							}
+						});
+					}
+					else if (!stat.isFile()) {
+						readDirectoryAndGenerateTests({
+							entry: path.join(entry, file),
+							output,
+							graphqlOutput,
+							schemaLocation
+						});
+					}
+				});
 			});
 		});
 	});
 }
 
-inquirer.prompt(paramQuestions).then(({ entry, output, graphqlOutput, schemaLocation }) => {
-	readDirectoryAndGenerateTests({ entry, output, graphqlOutput, schemaLocation});
+
+inquirer.prompt(paramQuestions).then(({ entry, output, schemaLocation }) => {
+	readDirectoryAndGenerateTests({ entry, output, schemaLocation });
 });
