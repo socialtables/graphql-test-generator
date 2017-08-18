@@ -1,29 +1,9 @@
-#!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
-const inquirer = require("inquirer");
 const mkdir = require('mkdirp');
 const gqlExtract = require("gql-extract");
 const tmp = require("tmp");
 const generateTest = require('./generateTest');
-
-const paramQuestions = [
-	{
-		type: "input",
-		name: "entry",
-		message: "What is the entry directory?"
-	},
-	{
-		type: "input",
-		name: "output",
-		message: "What is test output directory?"
-	},
-	{
-		type: "input",
-		name: "schemaLocation",
-		message: "What is the path to your graphql schema?"
-	}
-];
 
 function errorExit(err) {
 	if (err) {
@@ -32,7 +12,7 @@ function errorExit(err) {
 	}
 }
 
-function readDirectoryAndGenerateTests({ entry, output, schemaLocation }) {
+function gqlTestExtraction({ entry, output, schemaLocation }) {
 	tmp.dir({ unsafeCleanup: true}, (err, graphqlOutput, cleanup) => {
 		fs.readdir(entry, (err, files) => {
 			errorExit(err);
@@ -67,7 +47,7 @@ function readDirectoryAndGenerateTests({ entry, output, schemaLocation }) {
 						});
 					}
 					else if (!stat.isFile()) {
-						readDirectoryAndGenerateTests({
+						gqlTestExtraction({
 							entry: path.join(entry, file),
 							output,
 							graphqlOutput,
@@ -80,7 +60,4 @@ function readDirectoryAndGenerateTests({ entry, output, schemaLocation }) {
 	});
 }
 
-
-inquirer.prompt(paramQuestions).then(({ entry, output, schemaLocation }) => {
-	readDirectoryAndGenerateTests({ entry, output, schemaLocation });
-});
+module.exports = gqlTestExtraction;

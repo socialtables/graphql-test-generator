@@ -1,23 +1,7 @@
-#!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
-const inquirer = require("inquirer");
 const mkdir = require('mkdirp');
 const generateTest = require('./generateTest');
-
-const questions = [{
-	type: 'input',
-	name: 'entry',
-	message: 'What is the entry directory?'
-}, {
-	type: 'input',
-	name: 'output',
-	message: 'What is the test output directory?'
-}, {
-	type: 'input',
-	name: 'schemaLocation',
-	message: 'What is the schema directory'
-}];
 
 function errorExit(err) {
 	if (err) {
@@ -26,7 +10,7 @@ function errorExit(err) {
 	}
 }
 
-function readQueriesAndGenerateTests({ entry, output, schemaLocation }) {
+function graphqlTestGenerator({ entry, output, schemaLocation }) {
 	fs.readdir(entry, function(err, files) {
 		errorExit(err);
 		files.forEach(file => {
@@ -44,12 +28,11 @@ function readQueriesAndGenerateTests({ entry, output, schemaLocation }) {
 						});
 					});
 				} else if (!isFile) {
-					readQueriesAndGenerateTests({ entry: fullFile, output, schemaLocation});
+					graphqlTestGenerator({ entry: fullFile, output, schemaLocation});
 				}
 			});
 		});
 	});
 }
 
-inquirer.prompt(questions)
-	.then(readQueriesAndGenerateTests);
+module.exports = graphqlTestGenerator;
