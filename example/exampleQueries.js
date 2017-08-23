@@ -6,7 +6,6 @@ export default gql`
 			space_templates {
 				id,
 				name,
-				image,
 				created_at
 			}
 		}

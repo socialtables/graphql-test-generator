@@ -12,7 +12,15 @@ function errorExit(err) {
 	}
 }
 
-function gqlTestExtraction({ entry, output, schemaLocation }) {
+function writeFile(filename, query, queryName, schemaLocation) {
+	fs.writeFileSync(
+		filename,
+		generateTest({ query, queryName, schemaLocation })
+	);
+	console.log(`test generated for ${queryName}`);
+}
+
+function gqlTestExtraction({ entry, output, schemaLocation, overwriteFiles }) {
 	tmp.dir({ unsafeCleanup: true}, (err, graphqlOutput, cleanup) => {
 		fs.readdir(entry, (err, files) => {
 			errorExit(err);
@@ -32,15 +40,27 @@ function gqlTestExtraction({ entry, output, schemaLocation }) {
 										errorExit(err);
 										mkdir(output, err => {
 											errorExit(err);
-											fs.writeFileSync(
-												path.join(output, `${queryName}-test.js`),
-												generateTest({ query, queryName, schemaLocation })
-											);
-											console.log(`test generated for ${queryName}`);
-											finishedCount++;
-											if (finishedCount === files.length) {
-												cleanup();
+											const filename = path.join(output, `${queryName}-test.js`);
+
+											if (overwriteFiles) {
+												writeFile(filename, query, queryName, schemaLocation);
+												finishedCount++;
+												if (finishedCount === files.length) {
+													cleanup();
+												}
+											} else {
+												fs.stat(filename, function(err, stat) {
+													const fileDoesNotExist = err || !stat.isFile();
+													if (fileDoesNotExist) {
+														writeFile(filename, query, queryName, schemaLocation);
+														finishedCount++;
+													}
+													if (finishedCount === files.length) {
+														cleanup();
+													}
+												});
 											}
+
 										});
 								});
 							}
@@ -51,7 +71,8 @@ function gqlTestExtraction({ entry, output, schemaLocation }) {
 							entry: path.join(entry, file),
 							output,
 							graphqlOutput,
-							schemaLocation
+							schemaLocation,
+							overwriteFiles
 						});
 					}
 				});

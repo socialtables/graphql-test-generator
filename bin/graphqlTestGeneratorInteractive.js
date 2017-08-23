@@ -14,6 +14,10 @@ const questions = [{
 	type: 'input',
 	name: 'schemaLocation',
 	message: 'What is the schema directory'
+},{
+	type: "input",
+	name: "overwriteFiles",
+	message: "Should existing tests be overwritten?"
 }];
 
 inquirer.prompt(questions).then(graphqlTestGenerator);
