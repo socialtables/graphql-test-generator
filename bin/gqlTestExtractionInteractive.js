@@ -17,6 +17,11 @@ const paramQuestions = [
 		type: "input",
 		name: "schemaLocation",
 		message: "What is the path to your graphql schema?"
+	},
+	{
+		type: "input",
+		name: "overwriteFiles",
+		message: "Should existing tests be overwritten?"
 	}
 ];
 

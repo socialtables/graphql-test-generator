@@ -4,7 +4,8 @@ query spaceTemplatesForUser {
 			id,
 			name,
 			image,
-			created_at
+			created_at,
+			archived
 		}
 	}
 }
