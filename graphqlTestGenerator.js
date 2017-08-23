@@ -35,7 +35,7 @@ function graphqlTestGenerator({ entry, output, schemaLocation, overwriteFiles })
 								fs.stat(fileName, function(err, stat) {
 									const fileDoesNotExist = err || !stat.isFile();
 									if (fileDoesNotExist) {
-										console.log('does not exist');
+
 										writeFile(fileName, query, schemaLocation, queryName);
 									}
 								});
