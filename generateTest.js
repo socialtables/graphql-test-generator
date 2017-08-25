@@ -1,13 +1,15 @@
 const path = require("path");
-function generateTest({ query, schemaLocation, queryName, importLocation =  "./default-test-return"}) {
-	return `const { parse } = require("graphql/language");
+const DEFAULT_IMPORT_LOCATION =  path.join(__dirname, "./default-test-return");
+function generateTest({ query, schemaLocation, queryName, importLocation = DEFAULT_IMPORT_LOCATION}) {
+	return `const path path = require("path");
+const { parse } = require("graphql/language");
 const { validate } = require("graphql/validation");
 const schema = require("${schemaLocation}");
 const query = \`${`${query}`}\`;
 const queryAST = parse(query);
 const errors = validate(schema, queryAST);
 const isValid = !errors.length;
-${require(path.join(__dirname, importLocation))({ queryName })};
+${require(importLocation === DEFAULT_IMPORT_LOCATION ? importLocation :  path.join(process.cwd(), importLocation))({ queryName })};
 `
 }
 
