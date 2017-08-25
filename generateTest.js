@@ -1,7 +1,7 @@
 const path = require("path");
 const DEFAULT_IMPORT_LOCATION =  path.join(__dirname, "./default-test-return");
 function generateTest({ query, schemaLocation, queryName, importLocation = DEFAULT_IMPORT_LOCATION}) {
-	return `const path path = require("path");
+	return `const path = require("path");
 const { parse } = require("graphql/language");
 const { validate } = require("graphql/validation");
 const schema = require("${schemaLocation}");
