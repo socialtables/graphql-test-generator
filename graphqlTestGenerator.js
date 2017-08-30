@@ -10,12 +10,12 @@ function errorExit(err) {
 	}
 }
 
-function writeFile(fileName, query, schemaLocation, queryName) {
-	fs.writeFileSync(fileName, generateTest({ query, schemaLocation, queryName }));
+function writeFile(fileName, query, schemaLocation, queryName, importLocation) {
+	fs.writeFileSync(fileName, generateTest({ query, schemaLocation, queryName, importLocation }));
 	console.log(`test written for ${queryName}`);
 }
 
-function graphqlTestGenerator({ entry, output, schemaLocation, overwriteFiles }) {
+function graphqlTestGenerator({ entry, output, schemaLocation, overwriteFiles, importLocation }) {
 	fs.readdir(entry, function(err, files) {
 		errorExit(err);
 		files.forEach(file => {
@@ -30,20 +30,20 @@ function graphqlTestGenerator({ entry, output, schemaLocation, overwriteFiles })
 							const queryName = file.split('.graphql')[0];
 							const fileName = path.join(output, `${queryName}-test.js`);
 							if (overwriteFiles) {
-								writeFile(fileName, query, schemaLocation, queryName);
+								writeFile(fileName, query, schemaLocation, queryName, importLocation);
 							} else {
 								fs.stat(fileName, function(err, stat) {
 									const fileDoesNotExist = err || !stat.isFile();
 									if (fileDoesNotExist) {
 
-										writeFile(fileName, query, schemaLocation, queryName);
+										writeFile(fileName, query, schemaLocation, queryName, importLocation);
 									}
 								});
 							}
 						});
 					});
 				} else if (!isFile) {
-					graphqlTestGenerator({ entry: fullFile, output, schemaLocation, overwriteFiles});
+					graphqlTestGenerator({ entry: fullFile, output, schemaLocation, overwriteFiles, importLocation });
 				}
 			});
 		});

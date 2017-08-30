@@ -14,10 +14,14 @@ const questions = [{
 	type: 'input',
 	name: 'schemaLocation',
 	message: 'What is the schema directory'
-},{
+}, {
 	type: "input",
 	name: "overwriteFiles",
 	message: "Should existing tests be overwritten?"
+}, {
+	type: "input",
+	name: "importLocation",
+	message: "What is the path to your test function generator?"
 }];
 
 inquirer.prompt(questions).then(graphqlTestGenerator);
