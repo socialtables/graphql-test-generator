@@ -8,7 +8,7 @@ program
 .option('-o, --output [value]', 'out directory')
 .option('-s, --schema [value]', 'schema location')
 .option('-r, --replace', 'overwrite existing test files')
-.option('-t, --testGeneratorFunction', 'path to a function, relative to your current working directory, that takes query name as argument with isValid in scope and returns a test file in the framework of your choice')
+.option('-t, --testGeneratorFunction [value]', 'path to a function, relative to your current working directory, that takes query name as argument with isValid in scope and returns a test file in the framework of your choice')
 .parse(process.argv);
 
 if (program.entry && program.output && program.schema) {
