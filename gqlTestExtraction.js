@@ -12,15 +12,15 @@ function errorExit(err) {
 	}
 }
 
-function writeFile(filename, query, queryName, schemaLocation) {
+function writeFile(filename, query, queryName, schemaLocation, importLocation) {
 	fs.writeFileSync(
 		filename,
-		generateTest({ query, queryName, schemaLocation })
+		generateTest({ query, queryName, schemaLocation, importLocation })
 	);
 	console.log(`test generated for ${queryName}`);
 }
 
-function gqlTestExtraction({ entry, output, schemaLocation, overwriteFiles }) {
+function gqlTestExtraction({ entry, output, schemaLocation, overwriteFiles, importLocation }) {
 	tmp.dir({ unsafeCleanup: true}, (err, graphqlOutput, cleanup) => {
 		fs.readdir(entry, (err, files) => {
 			errorExit(err);
@@ -43,7 +43,7 @@ function gqlTestExtraction({ entry, output, schemaLocation, overwriteFiles }) {
 											const filename = path.join(output, `${queryName}-test.js`);
 
 											if (overwriteFiles) {
-												writeFile(filename, query, queryName, schemaLocation);
+												writeFile(filename, query, queryName, schemaLocation, importLocation);
 												finishedCount++;
 												if (finishedCount === files.length) {
 													cleanup();
@@ -52,7 +52,7 @@ function gqlTestExtraction({ entry, output, schemaLocation, overwriteFiles }) {
 												fs.stat(filename, function(err, stat) {
 													const fileDoesNotExist = err || !stat.isFile();
 													if (fileDoesNotExist) {
-														writeFile(filename, query, queryName, schemaLocation);
+														writeFile(filename, query, queryName, schemaLocation, importLocation);
 														finishedCount++;
 													}
 													if (finishedCount === files.length) {
@@ -72,7 +72,8 @@ function gqlTestExtraction({ entry, output, schemaLocation, overwriteFiles }) {
 							output,
 							graphqlOutput,
 							schemaLocation,
-							overwriteFiles
+							overwriteFiles,
+							importLocation
 						});
 					}
 				});

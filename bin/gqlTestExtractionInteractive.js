@@ -22,6 +22,11 @@ const paramQuestions = [
 		type: "input",
 		name: "overwriteFiles",
 		message: "Should existing tests be overwritten?"
+	},
+	{
+		type: "input",
+		name: "importLocation",
+		message: "What is the path to your test function generator?"
 	}
 ];
 
