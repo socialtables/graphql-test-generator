@@ -1,4 +1,5 @@
 ##  GraphQL Test Generator
+[![CircleCI](https://circleci.com/gh/socialtables/graphql-test-generator.svg?style=svg)](https://circleci.com/gh/socialtables/graphql-test-generator)
 Generates tests for graphql queries that compare the query against the schema. Exports one function for generating tests and another function for extracting queries and generating tests. It can also be installed globally and used through the command line.
 
 ### Install
