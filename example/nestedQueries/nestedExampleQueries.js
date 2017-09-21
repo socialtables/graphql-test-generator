@@ -1,14 +1,10 @@
 import gql from "graphql-tag";
 
 export default gql`
-	query roomTemplatesForUser {
+	query getUserInformation {
 		user {
-			space_templates {
-				id,
-				name,
-				image,
-				created_at
-			}
+			id,
+			name
 		}
 	}
 `;

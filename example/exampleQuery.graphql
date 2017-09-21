@@ -1,4 +1,4 @@
-query nameForUser {
+query getNameForUser {
 	user {
 		id,
 		name

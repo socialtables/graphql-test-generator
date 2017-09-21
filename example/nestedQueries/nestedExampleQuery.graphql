@@ -1,11 +1,6 @@
-query spaceTemplatesForUser {
+query getUsers {
 	user {
-		space_templates {
-			id,
-			name,
-			image,
-			created_at,
-			archived
-		}
+		id,
+		name
 	}
 }
