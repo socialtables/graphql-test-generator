@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "pretest": "node tests/index.js",
-    "test": "tape generatedTests-graphqlTestGenerator/*.js && tape generatedTests-gqlTestExtraction/*.js "
+    "test": "tape generatedTests/*/*.js"
   },
   "bin": {
     "gqlTestExtraction": "./bin/gqlTestExtraction.js",
