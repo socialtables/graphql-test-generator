@@ -1,0 +1,7 @@
+query getNameForUser {
+	user {
+		id,
+		name,
+		email
+	}
+}
