@@ -1,19 +1,16 @@
 import gql from "graphql-tag";
 
 export default gql`
-	query spaceTemplatesForUser {
+	query getUserIdAndName {
 		user {
-			space_templates {
-				id,
-				name,
-				created_at
-			}
+			id,
+			name
 		}
 	}
 `;
 
 export const idForUser = gql`
-	query idForUser {
+	query getUserId {
 		user {
 			id
 		}
