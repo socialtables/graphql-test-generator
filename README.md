@@ -13,8 +13,8 @@ npm install graphql-test-generator --save-dev
 * entry - directory containing the graphql queries to be tested
 * output - directory to write the files to
 * schemaLocation - directory of the schemas to compare the queries to
-* overwriteFiles - optional boolean indicating whether old test files should be overwritten
-* importLocation - optional directory for including other test functions
+* overwriteFiles - optional boolean indicating whether old test files should be overwritten (defaults to false)
+* importLocation - optional directory for including other test functions (defaults to generating tape test)
 
 #### Use
 
@@ -38,8 +38,8 @@ graphqlTestGenerator -e ./src -o ./test -s ../server/schema
 * entry - directory containing the application code with graphql queries in template strings
 * output - directory to write the files to
 * schemaLocation - directory of the schemas to compare the queries to
-* overwriteFiles - optional boolean indicating whether old test files should be overwritten
-* importLocation - optional directory for including other test functions
+* overwriteFiles - optional boolean indicating whether old test files should be overwritten (defaults to false)
+* importLocation - optional directory for including other test functions (defaults to generating tape test)
 
 #### Use
 
